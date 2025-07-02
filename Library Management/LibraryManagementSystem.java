@@ -80,9 +80,7 @@ class Library {
     public void searchBooks(String keyword) {
         boolean found = false;
         for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(keyword)
-                    || book.getAuthor().equalsIgnoreCase(keyword)
-                    || book.getGenre().equalsIgnoreCase(keyword)) {
+            if (book.getTitle().equalsIgnoreCase(keyword) || book.getAuthor().equalsIgnoreCase(keyword) || book.getGenre().equalsIgnoreCase(keyword)) {
                 System.out.println(book);
                 found = true;
             }
