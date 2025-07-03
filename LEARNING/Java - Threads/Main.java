@@ -26,3 +26,5 @@ public class Main {
         t2.start();                                   // Start the thread
     }
 }
+
+//thread is a class, Runnable is interface... Runnable is used as java does not allow multiple inheritance

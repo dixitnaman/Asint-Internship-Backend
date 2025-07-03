@@ -54,33 +54,37 @@ class Book {
     }
 
     @Override
+    //whenever printing instance directly, of the class, it is directly executing tostring method
     public String toString() {
-        return String.format("Title: %s\n Author: %s\n Genre: %s\n Available Copies: %d", title, author, genre, copies);
+        return String.format("Title: %s\n Author: %s\n Genre: %s\n Available Copies: %d", title, author, genre, copies); //prints in next line
+        return String.format("Title: %s || Author: %s || Genre: %s || Available Copies: %d", title, author, genre, copies); //divides data by ||
+
+        return;
     }
 }
 
 class Library {
 
-    private List<Book> books = new ArrayList<>(); //ek list banai hai, books naam ki, jisme "Book" class ke objects store honge
+    private List<Book> libbooks = new ArrayList<>(); //ek list banai hai, libbooks naam ki, jisme "Book" class ke objects store honge
 
     public void addBook(String title, String author, String genre, int copies) {
-        books.add(new Book(title, author, genre, copies));
+        libbooks.add(new Book(title, author, genre, copies));
     }
 
     public void viewAllBooks() {
-        if (books.isEmpty()) {
+        if (libbooks.isEmpty()) {
             System.out.println("No books in the library.");
             return;
         }
-        for (Book book : books) {
+        for (Book book : libbooks) {
             System.out.println(book);
         }
     }
 
-    public void searchBooks(String keyword) {
+    public void searchBooks(String bookvalue) {
         boolean found = false;
-        for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(keyword) || book.getAuthor().equalsIgnoreCase(keyword) || book.getGenre().equalsIgnoreCase(keyword)) {
+        for (Book book : libbooks) {
+            if (book.getTitle().equalsIgnoreCase(bookvalue) || book.getAuthor().equalsIgnoreCase(bookvalue) || book.getGenre().equalsIgnoreCase(bookvalue)) {
                 System.out.println(book);
                 found = true;
             }
@@ -91,7 +95,7 @@ class Library {
     }
 
     public void borrowBook(String title) {
-        for (Book book : books) {
+        for (Book book : libbooks) {
             if (book.getTitle().equalsIgnoreCase(title)) {
                 if (book.isAvailable()) {
                     book.borrowBook();
@@ -106,7 +110,7 @@ class Library {
     }
 
     public void returnBook(String title) {
-        for (Book book : books) {
+        for (Book book : libbooks) {
             if (book.getTitle().equalsIgnoreCase(title)) {
                 if (book.returnBook()) {
                     System.out.println("Book returned successfully.");
@@ -130,16 +134,16 @@ public class LibraryManagementSystem {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n=== Library Management System ===");
-            System.out.println("1. Add New Book");
-            System.out.println("2. View All Books");
+            System.out.println("\nLibrary Management System");
+            System.out.println("1. Add a new book");
+            System.out.println("2. View all library books");
             System.out.println("3. Search Book by Title/Author/Genre");
             System.out.println("4. Borrow Book");
             System.out.println("5. Return Book");
             System.out.println("6. Exit");
             System.out.print("Choose an option: ");
             int choice = sc.nextInt();
-            sc.nextLine(); // Consume newline
+            sc.nextLine();
 
             switch (choice) {
                 case 1:
@@ -186,20 +190,20 @@ public class LibraryManagementSystem {
 
     private static void searchBook() {
         System.out.print("Enter Title/Author/Genre to search: ");
-        String keyword = sc.nextLine();
-        library.searchBooks(keyword);
+        String bookvalue = sc.nextLine();
+        library.searchBooks(bookvalue);
         sc.nextLine();
     }
 
     private static void borrowBook() {
-        System.out.print("Enter Book Title to borrow: ");
+        System.out.print("Enter book title to borrow: ");
         String title = sc.nextLine();
         library.borrowBook(title);
         sc.nextLine();
     }
 
     private static void returnBook() {
-        System.out.print("Enter Book Title to return: ");
+        System.out.print("Enter book title to return: ");
         String title = sc.nextLine();
         library.returnBook(title);
         sc.nextLine();
