@@ -1,6 +1,7 @@
 package com.ratingmanagement.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +27,7 @@ public class AdminController {
 
     //Filter Users by rating
     @GetMapping("/filter")
-    public List<Rating> filterUsers(@RequestParam String category,
-                                    @RequestParam int value) {
-        if (value < 1 || value > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5");
-        }
-        return ratingService.filterBy(category, value);
+    public List<Rating> filterUsers(@RequestParam Map<String, String> filters) {
+        return ratingService.filterByCustom(filters);
     }
 }

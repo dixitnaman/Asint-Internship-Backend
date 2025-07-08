@@ -10,7 +10,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET = "randomkeygeneratedforcreatingtokenatratingmanagementsystem"; // Min 256-bit (32 chars)
+    private static final String SECRET = "randomkeygeneratedforcreatingtokenatratingmanagementsystem";
     private static final long EXPIRATION_TIME = 3600000; // 1 hour
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());

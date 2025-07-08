@@ -21,15 +21,43 @@ public class RatingService {
         return "Rating added successfully.";
     }
 
-    public List<Rating> filterBy(String category, int value) {
-        switch (category.toLowerCase()) {
-            case "ambiance": return ratingRepo.findByAmbiance(value);
-            case "food": return ratingRepo.findByFood(value);
-            case "service": return ratingRepo.findByService(value);
-            case "cleanliness": return ratingRepo.findByCleanliness(value);
-            case "drinks": return ratingRepo.findByDrinks(value);
-            default: return List.of();
-        }
+    public List<Rating> filterByCustom(Map<String, String> filters) {
+        List<Rating> allRatings = ratingRepo.findAll();
+
+        return allRatings.stream().filter(rating -> {
+            for (Map.Entry<String, String> entry : filters.entrySet()) {
+                String key = entry.getKey().toLowerCase();
+                int value;
+                try {
+                    value = Integer.parseInt(entry.getValue());
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+
+                if (value < 1 || value > 5) continue;
+
+                switch (key) {
+                    case "ambiance":
+                        if (rating.getAmbiance() == value) return true;
+                        break;
+                    case "food":
+                        if (rating.getFood() == value) return true;
+                        break;
+                    case "service":
+                        if (rating.getService() == value) return true;
+                        break;
+                    case "cleanliness":
+                        if (rating.getCleanliness() == value) return true;
+                        break;
+                    case "drinks":
+                        if (rating.getDrinks() == value) return true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return false;
+        }).toList();
     }
 
     public Map<String, Double> getAverageRatings() {
