@@ -1,6 +1,7 @@
 package com.ratingmanagement.demo.controller;
 
 import com.ratingmanagement.demo.RatingManagementApplication;
+import com.ratingmanagement.demo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ratingmanagement.demo.model.User;
 import com.ratingmanagement.demo.service.UserService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,18 +30,23 @@ public class AuthController {
         return userService.registerUser(name, email, password);
     }
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String email,
-                                @RequestParam String password) {
-        RatingManagementApplication.user = userService.login(email, password);
-
-        if (RatingManagementApplication.user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED) //HTTP code 401
-                    .body("Invalid email or password");
+                                   @RequestParam String password) {
+        String token = userService.login(email, password);
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
-        return ResponseEntity.ok(RatingManagementApplication.user);
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
+
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(){

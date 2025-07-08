@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
     //optional ka use kr re, taaki agar null pointer excpetion aaye to usse manage krle
     Optional<User> findByEmailAndPassword(String email, String password);
+    Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
 }

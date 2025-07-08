@@ -7,13 +7,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
-//used to map to a database table
 @Entity
 @Table(name = "users")
 public class User {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //Gen type Identity means, ID will be incremented by 1
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
@@ -21,7 +20,7 @@ public class User {
     private String password;
     private String role;
 
-    @Transient //makes sure ki token database me store na ho, bs use kr sake
+    @Transient
     private String token;
 
     // Constructors
