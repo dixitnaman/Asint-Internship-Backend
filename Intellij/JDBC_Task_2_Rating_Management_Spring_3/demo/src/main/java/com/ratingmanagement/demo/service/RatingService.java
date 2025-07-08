@@ -2,6 +2,9 @@ package com.ratingmanagement.demo.service;
 
 import com.ratingmanagement.demo.model.Rating;
 import com.ratingmanagement.demo.repository.RatingRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +12,7 @@ import java.util.List;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RatingService {
@@ -16,48 +20,30 @@ public class RatingService {
     @Autowired
     private RatingRepository ratingRepo;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public String addRating(Rating rating) {
         ratingRepo.save(rating);
         return "Rating added successfully.";
     }
 
     public List<Rating> filterByCustom(Map<String, String> filters) {
-        List<Rating> allRatings = ratingRepo.findAll();
+        String conditions = filters.entrySet().stream()
+                .filter(e -> {
+                    try {
+                        int val = Integer.parseInt(e.getValue());
+                        return val >= 1 && val <= 5;
+                    } catch (NumberFormatException ex) {
+                        return false;
+                    }
+                })
+                .map(e -> e.getKey().toLowerCase() + " = " + Integer.parseInt(e.getValue()))
+                .collect(Collectors.joining(" OR "));
 
-        return allRatings.stream().filter(rating -> {
-            for (Map.Entry<String, String> entry : filters.entrySet()) {
-                String key = entry.getKey().toLowerCase();
-                int value;
-                try {
-                    value = Integer.parseInt(entry.getValue());
-                } catch (NumberFormatException e) {
-                    continue;
-                }
-
-                if (value < 1 || value > 5) continue;
-
-                switch (key) {
-                    case "ambiance":
-                        if (rating.getAmbiance() == value) return true;
-                        break;
-                    case "food":
-                        if (rating.getFood() == value) return true;
-                        break;
-                    case "service":
-                        if (rating.getService() == value) return true;
-                        break;
-                    case "cleanliness":
-                        if (rating.getCleanliness() == value) return true;
-                        break;
-                    case "drinks":
-                        if (rating.getDrinks() == value) return true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return false;
-        }).toList();
+        String sql = "SELECT * FROM ratings" + (conditions.isEmpty() ? "" : " WHERE " + conditions);
+        Query query = entityManager.createNativeQuery(sql, Rating.class);
+        return query.getResultList();
     }
 
     public Map<String, Double> getAverageRatings() {
